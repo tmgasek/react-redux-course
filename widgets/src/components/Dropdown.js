@@ -5,16 +5,20 @@ const Dropdown = ({ options, selected, onSelectedChange }) => {
   const ref = useRef();
 
   useEffect(() => {
-    document.body.addEventListener(
-      'click',
-      (event) => {
-        if (ref.current.contains(event.target)) {
-          return;
-        }
-        setOpen(false);
-      },
-      { capture: true }
-    );
+    const onBodyClick = (event) => {
+      if (ref.current.contains(event.target)) {
+        return;
+      }
+      setOpen(false);
+    };
+
+    document.body.addEventListener('click', onBodyClick, { capture: true });
+
+    return () => {
+      document.body.removeEventListener('click', onBodyClick, {
+        capture: true,
+      });
+    };
   }, []);
 
   const renderedOptions = options.map((option) => {
@@ -33,22 +37,26 @@ const Dropdown = ({ options, selected, onSelectedChange }) => {
     );
   });
 
-  console.log(ref.current);
   return (
-    <div ref={ref} className="form">
-      <div className="field">
-        <label className="label">Select a color</label>
-        <div
-          onClick={() => setOpen(!open)}
-          className={`ui selection dropdown ${open ? 'visible active' : ''}`}
-        >
-          <i className="dropdown icon"></i>
-          <div className="text">{selected.label}</div>
-          <div className={`menu ${open ? 'visible transition' : ''}`}>
-            {renderedOptions}
+    <div>
+      <div ref={ref} className="form">
+        <div className="field">
+          <label className="label">Select a color</label>
+          <div
+            onClick={() => setOpen(!open)}
+            className={`ui selection dropdown ${open ? 'visible active' : ''}`}
+          >
+            <i className="dropdown icon"></i>
+            <div className="text">{selected.label}</div>
+            <div className={`menu ${open ? 'visible transition' : ''}`}>
+              {renderedOptions}
+            </div>
           </div>
         </div>
       </div>
+      <p style={{ color: `${selected.value}` }}>
+        this text is {selected.value}
+      </p>
     </div>
   );
 };
