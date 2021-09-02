@@ -6,8 +6,13 @@ import { createStore } from 'redux';
 import App from './components/App';
 import reducers from './reducers';
 
+const store = createStore(
+  reducers /* preloadedState, */,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
 ReactDOM.render(
-  <Provider store={createStore(reducers)}>
+  <Provider store={store}>
     <App />
   </Provider>,
 
