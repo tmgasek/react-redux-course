@@ -1,14 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const UserHeader = ({ user }) => {
+const UserHeader = ({ userId }) => {
+  const users = useSelector((state) => state.users);
+  const user = users.find((user) => user.id === userId);
+
   if (!user) return null;
 
   return <div className="header">{user.name}</div>;
 };
 
-const mapStateToProps = (state, ownProps) => {
-  return { user: state.users.find((user) => user.id === ownProps.userId) };
-};
-
-export default connect(mapStateToProps)(UserHeader);
+export default UserHeader;

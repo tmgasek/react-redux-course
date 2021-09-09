@@ -5,8 +5,8 @@ export const fetchPostsAndUsers = () => async (dispatch, getState) => {
   await dispatch(fetchPosts());
 
   _.chain(getState().posts)
-    .map('userId')
-    .uniq()
+    .map('userId') //makes an array with all the ids of users
+    .uniq() // makes the array unique so it's only 10 ids
     .forEach((id) => dispatch(fetchUser(id)))
     .value();
 };
