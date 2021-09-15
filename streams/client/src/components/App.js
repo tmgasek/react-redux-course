@@ -15,7 +15,7 @@ const App = () => {
         <Route path="/" exact>
           <StreamList />
         </Route>
-        <Route path="/streams/create" exact>
+        <Route path="/streams/new" exact>
           <StreamCreate />
         </Route>
         <Route path="/streams/delete" exact>
