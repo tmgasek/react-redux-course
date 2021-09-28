@@ -23,7 +23,7 @@ const App = () => {
           <StreamDelete />
         </Route>
         <Route path="/streams/edit/:id" component={StreamEdit} exact>
-          <StreamEdit />
+          {/* <StreamEdit /> use this for refactor*/}
         </Route>
         <Route path="/streams/show" exact>
           <StreamShow />

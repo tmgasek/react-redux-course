@@ -1,28 +1,22 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import React from 'react';
 import { fetchStream } from '../../actions';
+import { connect } from 'react-redux';
 
-const StreamEdit = () => {
-  const { id } = useParams();
-  const stream = useSelector((state) => state.streams[id]);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!stream) {
-      dispatch(fetchStream(id));
-      console.log('use effect ran');
-    }
-  }, [dispatch, id, stream]);
-
-  console.log('stream to edit:', stream);
-  console.log(id);
-
-  if (!stream) {
-    return null;
+class StreamEdit extends React.Component {
+  componentDidMount() {
+    this.props.fetchStream(this.props.match.params.id);
   }
 
-  return <div> {stream.title}</div>;
+  render() {
+    if (!this.props.stream) {
+      return <div>Loading...</div>;
+    }
+    return <div>{this.props.stream.title}</div>;
+  }
+}
+
+const mapStateToProps = (state, ownProps) => {
+  return { stream: state.streams[ownProps.match.params.id] };
 };
 
-export default StreamEdit;
+export default connect(mapStateToProps, { fetchStream })(StreamEdit);
