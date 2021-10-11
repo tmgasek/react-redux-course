@@ -1,15 +1,20 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchStreams } from '../../actions';
+import { useSelector, useDispatch } from 'react-redux';
 
-class StreamList extends React.Component {
-  componentDidMount() {
-    this.props.fetchStreams();
-  }
+const StreamList = () => {
+  const streams = useSelector((state) => Object.values(state.streams));
+  const currentUserId = useSelector((state) => state.auth.userId);
+  const isSignedIn = useSelector((state) => state.auth.isSignedIn);
 
-  renderAdmin(stream) {
-    if (this.props.currentUserId === stream.userId) {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchStreams());
+  }, [dispatch]);
+
+  const renderAdmin = (stream) => {
+    if (currentUserId === stream.userId) {
       return (
         <div className="right floated content">
           <Link to={`/streams/edit/${stream.id}`} className="ui button primary">
@@ -24,13 +29,13 @@ class StreamList extends React.Component {
         </div>
       );
     } else return null;
-  }
+  };
 
-  renderList() {
-    return this.props.streams.map((stream) => {
+  const renderList = () => {
+    return streams.map((stream) => {
       return (
         <div className="item" key={stream.id}>
-          {this.renderAdmin(stream)}
+          {renderAdmin(stream)}
           <i className="large middle aligned icon camera" />
           <div className="content">
             <Link to={`/streams/${stream.id}`} className="header">
@@ -41,10 +46,10 @@ class StreamList extends React.Component {
         </div>
       );
     });
-  }
+  };
 
-  renderCreate() {
-    if (this.props.isSignedIn) {
+  const renderCreate = () => {
+    if (isSignedIn) {
       return (
         <div style={{ textAlign: 'right' }}>
           <Link to="/streams/new" className="ui button primary">
@@ -53,30 +58,15 @@ class StreamList extends React.Component {
         </div>
       );
     }
-  }
-
-  render() {
-    return (
-      <div>
-        <h2>Streams</h2>
-        <div className="ui celled list">{this.renderList()}</div>
-        {this.renderCreate()}
-      </div>
-    );
-  }
-}
-
-const mapStateToProps = (state) => {
-  return {
-    streams: Object.values(state.streams),
-    currentUserId: state.auth.userId,
-    isSignedIn: state.auth.isSignedIn,
   };
-  /*
-  Object.values takes in an obj.
-  all the different values inside that obj are pulled out and inserted
-  into an array. Turns values into array.
-  */
+
+  return (
+    <div>
+      <h2>Streams</h2>
+      <div className="ui celled list">{renderList()}</div>
+      {renderCreate()}
+    </div>
+  );
 };
 
-export default connect(mapStateToProps, { fetchStreams })(StreamList);
+export default StreamList;

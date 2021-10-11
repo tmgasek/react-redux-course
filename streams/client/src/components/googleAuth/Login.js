@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { GoogleLogin } from 'react-google-login';
 import { signIn, signOut } from '../../actions';
 
@@ -11,10 +11,11 @@ const Login = () => {
 
   const onSucces = (res) => {
     console.log('Login success, currentUser:', res.profileObj);
-    dispatch(signIn('id'));
+    dispatch(signIn('TODO id'));
   };
   const onFailure = (res) => {
     console.log('Login failed, res:', res);
+    dispatch(signOut());
   };
 
   return (

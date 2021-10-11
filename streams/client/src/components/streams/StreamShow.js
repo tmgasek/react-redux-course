@@ -1,28 +1,29 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 import { fetchStream } from '../../actions';
 
-class StreamShow extends React.Component {
-  componentDidMount() {
-    this.props.fetchStream(this.props.match.params.id);
-  }
+const StreamShow = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const stream = useSelector((state) => state.streams[id]);
 
-  render() {
-    if (!this.props.stream) {
-      return <div>Loading...</div>;
+  useEffect(() => {
+    if (!stream) {
+      dispatch(fetchStream(id));
     }
+  }, [dispatch, id, stream]);
 
-    return (
-      <div>
-        <h1>{this.props.stream.title}</h1>
-        <h5>{this.props.stream.description}</h5>
-      </div>
-    );
+  if (!stream) {
+    return <div>Loading...</div>;
   }
-}
 
-const mapStateToProps = (state, ownProps) => {
-  return { stream: state.streams[ownProps.match.params.id] };
+  return (
+    <div>
+      <h1>{stream.title}</h1>
+      <h5>{stream.description}</h5>
+    </div>
+  );
 };
 
-export default connect(mapStateToProps, { fetchStream })(StreamShow);
+export default StreamShow;

@@ -1,23 +1,29 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Modal from '../Modal';
 import history from '../../history';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { fetchStream, deleteStream } from '../../actions';
 
-class StreamDelete extends React.Component {
-  componentDidMount() {
-    this.props.fetchStream(this.props.match.params.id);
-  }
+const StreamDelete = () => {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  const stream = useSelector((state) => state.streams[id]);
 
-  onDeleteClick = () => {
-    this.props.deleteStream(this.props.match.params.id);
+  useEffect(() => {
+    dispatch(fetchStream(id));
+    //this runs on every refresh, not optimal - look at streamedit/show. maybe try/catch?
+  }, [dispatch, id]);
+
+  const onDeleteClick = () => {
+    dispatch(deleteStream(id));
   };
 
-  renderActions() {
+  const renderActions = () => {
     return (
       <>
-        <button className="ui negative button" onClick={this.onDeleteClick}>
+        <button className="ui negative button" onClick={onDeleteClick}>
           Delete
         </button>
         <Link to="/" className="ui button">
@@ -25,31 +31,23 @@ class StreamDelete extends React.Component {
         </Link>
       </>
     );
-  }
+  };
 
-  renderContent() {
-    if (!this.props.stream) {
+  const renderContent = () => {
+    if (!stream) {
       return 'Are you sure you want to delete this stream?';
     }
-    return `Are you sure you want to delete ${this.props.stream.title}`;
-  }
+    return `Are you sure you want to delete ${stream.title}`;
+  };
 
-  render() {
-    return (
-      <Modal
-        title="Delete Stream"
-        content={this.renderContent()}
-        actions={this.renderActions()}
-        onDismiss={() => history.push('/')}
-      />
-    );
-  }
-}
-
-const mapStateToProps = (state, ownProps) => {
-  return { stream: state.streams[ownProps.match.params.id] };
+  return (
+    <Modal
+      title="Delete Stream"
+      content={renderContent()}
+      actions={renderActions()}
+      onDismiss={() => history.push('/')}
+    />
+  );
 };
 
-export default connect(mapStateToProps, { fetchStream, deleteStream })(
-  StreamDelete
-);
+export default StreamDelete;

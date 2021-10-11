@@ -20,14 +20,14 @@ const App = () => {
           <Route path="/streams/new" exact>
             <StreamCreate />
           </Route>
-          <Route path="/streams/delete/:id" exact component={StreamDelete}>
-            {/* <StreamDelete /> use this for refactor*/}
+          <Route path="/streams/delete/:id" exact>
+            <StreamDelete />
           </Route>
-          <Route path="/streams/edit/:id" component={StreamEdit} exact>
-            {/* <StreamEdit /> use this for refactor*/}
+          <Route path="/streams/edit/:id" exact>
+            <StreamEdit />
           </Route>
-          <Route path="/streams/:id" component={StreamShow} exact>
-            {/* <StreamShow /> refactor also */}
+          <Route path="/streams/:id" exact>
+            <StreamShow />
           </Route>
         </Switch>
       </Router>
